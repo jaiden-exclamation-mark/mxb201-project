@@ -1,8 +1,6 @@
-%% Data loading template for MXB201 Project Part II.
-
-% Initialisation
+%% Initialisation
 clear
-d = dir('faces/*.pgm');
+d = dir('MXB201_2026_Project_data/faces/*.pgm');
 N = length(d);
 I = imread([d(1).folder, '/', d(1).name]);
 [rows,cols] = size(I);
@@ -14,3 +12,23 @@ for j = 1:N
     I = imread([d(j).folder, '/', d(j).name]);
     A(:,j) = I(:);
 end
+
+%% Calculate Mean Face
+
+mean_face = mean(A, 2);
+
+%% Mean Centered SVD
+
+A_centered = A - mean_face;
+[U, ~, V] = svd(A_centered, 'econ');
+
+%% Get moustache value
+
+% get projection of each other centered face onto the moustache eigenface, 
+% checking how close each face is to target moustache eigenface
+moustache_eigenface = U(:, 13);
+scores = (moustache_eigenface' * A_centered)';
+
+normalisedScores = (scores - min(scores)) / (max(scores) - min(scores));
+
+threshold = 0.75;
