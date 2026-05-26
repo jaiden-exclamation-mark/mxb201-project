@@ -6,6 +6,7 @@ I = imread([d(1).folder, '/', d(1).name]);
 [rows,cols] = size(I);
 M = rows*cols;
 A = zeros(M, N);  % big matrix, whose columns are the images
+SubjectID = zeros(N, 1);
 
 screen_width = 1920;
 screen_height = 1080;
@@ -14,8 +15,10 @@ screen_height = 1080;
 for j = 1:N
     I = imread([d(j).folder, '/', d(j).name]);
     A(:,j) = I(:);
-end
 
+    token = regexp(d(j).name, 'yaleB(\d+)', 'tokens', 'once');
+    SubjectID(j) = str2double(token{1});
+end
 %% Calculate Mean Face
 
 mean_face = mean(A, 2);
@@ -32,10 +35,23 @@ A_centered = A - mean_face;
 moustache_eigenface = U(:, 13);
 scores = (moustache_eigenface' * A_centered)';
 
-normalisedScores = (scores - min(scores)) / (max(scores) - min(scores));
+moustacheSubjects = [6 9 20 24];
+hasMoustache = ismember(SubjectID, moustacheSubjects);
 
-threshold = 0.75;
+MoustacheScores = scores(hasMoustache);
+nonMoustacheScores = scores(~hasMoustache);
 
+threshold = (mean(MoustacheScores) + mean(nonMoustacheScores)) / 2;
+
+if mean(MoustacheScores) > mean(nonMoustacheScores);
+    predictedMoustache = scores > threshold;
+else 
+    predictedMoustache = scores < threshold;
+end
+
+accuracy = mean(predictedMoustache == hasMoustache) * 100;
+fprintf('Moustache detector Accuracy: %.1f%%n', accuracy)
+    
 %% Draw Figures
 
 % Mean Face
@@ -85,7 +101,7 @@ for i = 1:face_count
     idx = test_indices(i);
     nexttile;
     im_fig = imshow(reshape(A(:, idx), rows, cols), [], 'InitialMagnification', 'fit');
-    if normalisedScores(idx) > threshold
+    if predictedMoustache(idx)
         addStyledText(5, 15, sprintf('%d: yes', idx), 'g');
     else
         addStyledText(5, 15, sprintf('%d: no', idx), 'r');
