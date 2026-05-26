@@ -43,14 +43,14 @@ nonMoustacheScores = scores(~hasMoustache);
 
 threshold = (mean(MoustacheScores) + mean(nonMoustacheScores)) / 2;
 
-if mean(MoustacheScores) > mean(nonMoustacheScores);
+if mean(MoustacheScores) > mean(nonMoustacheScores)
     predictedMoustache = scores > threshold;
 else 
     predictedMoustache = scores < threshold;
 end
 
 accuracy = mean(predictedMoustache == hasMoustache) * 100;
-fprintf('Moustache detector Accuracy: %.1f%%n', accuracy)
+fprintf('Moustache detector Accuracy: %.1f%%\n', accuracy)
     
 %% Draw Figures
 
@@ -105,6 +105,63 @@ for i = 1:face_count
         addStyledText(5, 15, sprintf('%d: yes', idx), 'g');
     else
         addStyledText(5, 15, sprintf('%d: no', idx), 'r');
+    end
+end
+
+%% Detect moustaches in altered photos
+
+alteredDir = 'AlteredPhotos';
+alteredFiles = dir(fullfile(alteredDir, '*.pgm'));
+
+alteredN = length(alteredFiles);
+alteredA = zeros(M, alteredN);
+alteredNames = strings(alteredN, 1);
+
+for j = 1:alteredN
+    I_alt = imread(fullfile(alteredFiles(j).folder, alteredFiles(j).name));
+
+    alteredA(:, j) = double(I_alt(:));
+    alteredNames(j) = string(alteredFiles(j).name);
+end
+
+alteredCentered = alteredA - mean_face;
+alteredScores = (moustache_eigenface' * alteredCentered)';
+
+if mean(MoustacheScores) > mean(nonMoustacheScores)
+    alteredPredictions = alteredScores > threshold;
+else
+    alteredPredictions = alteredScores < threshold;
+end
+
+alteredResults = table(alteredNames, alteredScores, alteredPredictions, ...
+    'VariableNames', {'Filename', 'Score', 'PredictedMoustache'});
+
+disp(alteredResults)
+
+
+%% Show altered photos with predictions
+
+face_count = alteredN;
+
+width = screen_width * 0.6;
+height = screen_height * 0.5;
+x_pos = (screen_width-width) * 0.5;
+y_pos = (screen_height-height) * 0.5;
+
+createFigure(x_pos, y_pos, width, height);
+
+t = tiledlayout(ceil(face_count/4), 4, 'TileSpacing', 'none', 'Padding', 'compact');
+title(t, 'Moustache Detection on Altered Photos');
+
+for i = 1:face_count
+    nexttile;
+
+    imshow(reshape(alteredA(:, i), rows, cols), [], 'InitialMagnification', 'fit');
+
+    if alteredPredictions(i)
+        addStyledText(5, 15, sprintf('%s: yes', alteredNames(i)), 'g');
+    else
+        addStyledText(5, 15, sprintf('%s: no', alteredNames(i)), 'r');
     end
 end
 
