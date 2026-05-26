@@ -1,6 +1,6 @@
 %% Initialisation
 clear
-d = dir('MXB201_2026_Project_data/faces/*.pgm');
+d = dir('faces/*.pgm');
 N = length(d);
 I = imread([d(1).folder, '/', d(1).name]);
 [rows,cols] = size(I);
