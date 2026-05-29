@@ -16,6 +16,7 @@ for j = 1:N
     I = imread([d(j).folder, '/', d(j).name]);
     A(:,j) = I(:);
 
+    % Get ids for the different people
     token = regexp(d(j).name, 'yaleB(\d+)', 'tokens', 'once');
     SubjectID(j) = str2double(token{1});
 end
@@ -35,14 +36,19 @@ A_centered = A - mean_face;
 moustache_eigenface = U(:, 13);
 scores = (moustache_eigenface' * A_centered)';
 
-moustacheSubjects = [6 9 20 24];
+% Upon visual inspection, subjects 9 and 21 are the only 
+% people with moustaches
+moustacheSubjects = [ 9 21 ];
 hasMoustache = ismember(SubjectID, moustacheSubjects);
 
+% Calculate the threshold by finding the midpoint 
+% between the average score of positive matches (moustaches) 
+% and negative matches (no moustaches).
 MoustacheScores = scores(hasMoustache);
 nonMoustacheScores = scores(~hasMoustache);
-
 threshold = (mean(MoustacheScores) + mean(nonMoustacheScores)) / 2;
 
+% Apply threshold to all images
 if mean(MoustacheScores) > mean(nonMoustacheScores)
     predictedMoustache = scores > threshold;
 else 
@@ -110,6 +116,7 @@ end
 
 %% Detect moustaches in altered photos
 
+% repeat PCA for altered photos
 alteredDir = 'AlteredPhotos';
 alteredFiles = dir(fullfile(alteredDir, '*.pgm'));
 
