@@ -17,7 +17,7 @@ function [data, prediction] = construct_gaussian_rbf(points, epsilon, rho, diffu
                           A_b(1,2), A_b(1,3), A_b(2,3)];
     end
 
-    phi = zeros(num_voxels);
+    phi = zeros(num_voxels, num_voxels);
 
     for index = 1:num_voxels
         dx = points(:, 1) - points(index, 1);
