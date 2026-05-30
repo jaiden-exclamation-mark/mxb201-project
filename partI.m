@@ -20,9 +20,11 @@ A2 = 2 * [g(:,1).*g(:,2), g(:,1).*g(:,3), g(:,2).*g(:,3)];
 A = [A1, A2];   % 64 x 6
 
 % Brain mask
+disp("Creating brain mask...");
 mask = S0 > 0.05 * max(S0(:));
 
 if (plot_brain_mask)
+    disp("Plotting brain mask...")
     figure;
     imagesc(mask);
     axis image;
@@ -30,9 +32,11 @@ if (plot_brain_mask)
     title("Brain Mask");
 end
 
+disp("Creating diffusion tensors...");
 [D_field, D_tensor] = make_diffusion_tensor(S, S0, g, b);
 
 if (plot_gradient_directions)
+    disp("Plotting gradient pulse directions...");
     figure
     quiver3(0*g(:,1),0*g(:,1),0*g(:,1),g(:,1),g(:,2),g(:,3))
     axis vis3d
@@ -49,5 +53,9 @@ all_points = [X(:), Y(:)];
 mask_vector = mask(:);
 
 points = all_points(mask_vector, :);
+disp("Constructing Gaussian RBF...");
 [A_data, A_pred] = construct_gaussian_rbf(points, epsilon, rho, D_tensor);
+disp("Constructing fitted tensors...");
 D_fit = construct_fitted_tensors(S, points, A_pred);
+disp("Finding mean diffusivity maps...")
+[MD_data, MD_fit] = find_MD(D_tensor, D_fit, nx, ny, points);

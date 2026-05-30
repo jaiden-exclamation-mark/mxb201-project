@@ -1,7 +1,7 @@
-function [MD_data, MD_fit] = find_MD(D_tensor, D_fit, nx, ny, Nvox)
-    % Mean diffusivity maps
+function [MD_data, MD_fit] = find_MD(D_tensor, D_fit, nx, ny, pts)
     MD_data = nan(nx, ny);
     MD_fit  = nan(nx, ny);
+    Nvox = length(pts);
 
     for n = 1:Nvox
 
