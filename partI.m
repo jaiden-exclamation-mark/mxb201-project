@@ -7,8 +7,8 @@ rho = 1e-9;
 
 plot_brain_mask = true;
 plot_gradient_directions = true;
+plot_md_maps = true;
 plot_fa_maps = true;
-
 
 % END Parameters
 
@@ -61,6 +61,67 @@ disp("Constructing fitted tensors...");
 D_fit = construct_fitted_tensors(S, points, A_pred);
 disp("Finding mean diffusivity maps...")
 [MD_data, MD_fit] = find_MD(D_tensor, D_fit, nx, ny, points);
+
+if plot_md_maps
+    disp("Plotting mean diffusivity maps...");
+    % Use same colour scale for MD
+    clim_md = [min(MD_data(:),[],'omitnan'), ...
+           max(MD_data(:),[],'omitnan')];
+
+    figure;
+
+    subplot(1,2,1);
+    imagesc(MD_data);
+    axis image;
+    colorbar;
+    caxis(clim_md);
+    title('Mean Diffusivity from Data');
+
+    subplot(1,2,2);
+    imagesc(MD_fit);
+    axis image;
+    colorbar;
+    caxis(clim_md);
+    title('Mean Diffusivity from RBF Model');
+
+    % MD error map
+    MD_error = abs(MD_fit - MD_data);
+
+    figure;
+    imagesc(MD_error);
+    axis image;
+    colorbar;
+    title('Mean Diffusivity Error');
+    % Use same colour scale for MD
+    clim_md = [min(MD_data(:),[],'omitnan'), ...
+           max(MD_data(:),[],'omitnan')];
+
+    figure;
+
+    subplot(1,2,1);
+    imagesc(MD_data);
+    axis image;
+    colorbar;
+    caxis(clim_md);
+    title('Mean Diffusivity from Data');
+
+    subplot(1,2,2);
+    imagesc(MD_fit);
+    axis image;
+    colorbar;
+    caxis(clim_md);
+    title('Mean Diffusivity from RBF Model');
+
+    % MD error map
+    MD_error = abs(MD_fit - MD_data);
+
+    figure;
+    imagesc(MD_error);
+    axis image;
+    colorbar;
+    title('Mean Diffusivity Error');
+end
+
 disp("Constructing fractional anisotropy maps...");
 [FA_data, FA_fit] = construct_FA_maps(D_tensor, D_fit, nx, ny, points);
 
