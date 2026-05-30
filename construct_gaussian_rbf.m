@@ -5,8 +5,8 @@ function phi = construct_gaussian_rbf(points, centres, epsilon)
 
     for index = 1:num_centres
 
-        dx = points(:,1) - centres(a,1);
-        dy = points(:,2) - centres(a,2);
+        dx = points(:,1) - centres(index, 1);
+        dy = points(:,2) - centres(index, 2);
 
         r_squared = dx.^2 + dy.^2;
 
