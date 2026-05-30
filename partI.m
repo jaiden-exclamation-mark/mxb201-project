@@ -24,6 +24,7 @@ disp("Creating brain mask...");
 mask = S0 > 0.05 * max(S0(:));
 
 if (plot_brain_mask)
+    disp("Plotting brain mask...")
     figure;
     imagesc(mask);
     axis image;
@@ -35,6 +36,7 @@ disp("Creating diffusion tensors...");
 [D_field, D_tensor] = make_diffusion_tensor(S, S0, g, b);
 
 if (plot_gradient_directions)
+    disp("Plotting gradient pulse directions...");
     figure
     quiver3(0*g(:,1),0*g(:,1),0*g(:,1),g(:,1),g(:,2),g(:,3))
     axis vis3d
