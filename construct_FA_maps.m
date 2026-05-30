@@ -1,6 +1,7 @@
-function [FA_data,FA_fit] = construct_FA_maps(D_tensor, D_fit, nx, ny, Nvox)
+function [FA_data,FA_fit] = construct_FA_maps(D_tensor, D_fit, nx, ny, pts)
     FA_data = nan(nx, ny);
     FA_fit  = nan(nx, ny);
+    Nvox = length(pts);
 
     for n = 1:Nvox
 
