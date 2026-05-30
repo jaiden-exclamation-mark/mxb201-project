@@ -10,6 +10,6 @@ function phi = construct_gaussian_rbf(points, centres, epsilon)
 
         r_squared = dx.^2 + dy.^2;
 
-        phi(:,a) = exp(-(epsilon^2) * r_squared);
+        phi(:, index) = exp(-(epsilon^2) * r_squared);
     end
 end
