@@ -1,4 +1,12 @@
 clear
+% Parameters
+
+plot_brain_mask = true;
+
+
+% END Parameters
+
+% Load data from file
 load partI.mat
 whos
 
@@ -12,3 +20,14 @@ A = [A1, A2];   % 64 x 6
 
 D_field  = zeros(nx, ny, 6);
 D_tensor = zeros(nx, ny, 3, 3);
+
+% Brain mask
+mask = S0 > 0.05 * max(S0(:));
+
+if (plot_brain_mask)
+    figure;
+    imagesc(mask);
+    axis image;
+    colorbar;
+    title("Brain Mask");
+end
