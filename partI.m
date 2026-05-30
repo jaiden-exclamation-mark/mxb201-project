@@ -51,7 +51,7 @@ all_points = [X(:), Y(:)];
 mask_vector = mask(:);
 
 points = all_points(mask_vector, :);
-disp("Constructing Gaussian RBF...")
+disp("Constructing Gaussian RBF...");
 [A_data, A_pred] = construct_gaussian_rbf(points, epsilon, rho, D_tensor);
-disp("Constructing fitted tensors...")
+disp("Constructing fitted tensors...");
 D_fit = construct_fitted_tensors(S, points, A_pred);
