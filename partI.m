@@ -1,8 +1,12 @@
-clear
+clear; clf;
 % Parameters
 
-plot_brain_mask = true;
+% Generated with a gcv score test (will be added in future)
+epsilon = 0.45;
+rho = 1e-9;
 
+plot_brain_mask = true;
+plot_gradient_directions = true;
 
 % END Parameters
 
@@ -15,12 +19,6 @@ A1 = g .* g;
 A2 = 2 * [g(:,1).*g(:,2), g(:,1).*g(:,3), g(:,2).*g(:,3)];
 A = [A1, A2];   % 64 x 6
 
-% Allocate storage
-[nx, ny, ndirs] = size(S);
-
-D_field  = zeros(nx, ny, 6);
-D_tensor = zeros(nx, ny, 3, 3);
-
 % Brain mask
 mask = S0 > 0.05 * max(S0(:));
 
@@ -31,3 +29,25 @@ if (plot_brain_mask)
     colorbar;
     title("Brain Mask");
 end
+
+[D_field, D_tensor] = make_diffusion_tensor(S, S0, g, b);
+
+if (plot_gradient_directions)
+    figure
+    quiver3(0*g(:,1),0*g(:,1),0*g(:,1),g(:,1),g(:,2),g(:,3))
+    axis vis3d
+    xlabel x
+    ylabel y
+    zlabel z
+    title('Gradient pulse directions g_i')
+end
+
+% Coordinates
+[nx, ny, ~] = size(S);
+[X, Y] = ndgrid(1:nx, 1:ny);
+all_points = [X(:), Y(:)];
+mask_vector = mask(:);
+
+points = all_points(mask_vector, :);
+[A_data, A_pred] = construct_gaussian_rbf(points, epsilon, rho, D_tensor);
+D_fit = construct_fitted_tensors(S, points, A_pred);
