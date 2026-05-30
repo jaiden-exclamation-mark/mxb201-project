@@ -42,3 +42,13 @@ if (plot_gradient_directions)
     title('Gradient pulse directions g_i')
 end
 
+% Coordinates
+[nx, ny, ~] = size(S);
+[X, Y] = ndgrid(1:nx, 1:ny);
+all_points = [X(:), Y(:)];
+mask_vector = mask(:);
+
+points = all_points(mask_vector, :);
+[A_data, A_pred] = construct_gaussian_rbf(points, epsilon, rho, D_tensor);
+
+D_fit = construct_fitted_tensors(points, A_pred);
