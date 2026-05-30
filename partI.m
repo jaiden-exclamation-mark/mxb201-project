@@ -55,3 +55,5 @@ disp("Constructing Gaussian RBF...");
 [A_data, A_pred] = construct_gaussian_rbf(points, epsilon, rho, D_tensor);
 disp("Constructing fitted tensors...");
 D_fit = construct_fitted_tensors(S, points, A_pred);
+disp("Finding mean diffusivity maps...")
+[MD_data, MD_fit] = find_MD(D_tensor, D_fit, nx, ny);
