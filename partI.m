@@ -59,3 +59,5 @@ disp("Constructing fitted tensors...");
 D_fit = construct_fitted_tensors(S, points, A_pred);
 disp("Finding mean diffusivity maps...")
 [MD_data, MD_fit] = find_MD(D_tensor, D_fit, nx, ny, points);
+disp("Constructing fractional anisotropy maps...");
+[FA_data, FA_fit] = construct_FA_maps(D_tensor, D_fit, nx, ny, points);
