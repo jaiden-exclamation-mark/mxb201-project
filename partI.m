@@ -65,19 +65,20 @@ disp("Constructing fractional anisotropy maps...");
 [FA_data, FA_fit] = construct_FA_maps(D_tensor, D_fit, nx, ny, points);
 
 if plot_fa_maps
+    disp("Plotting fractional anisotropy maps...");
     figure;
 
-    subplot(1,2,1)
-    imagesc(FA_data)
-    axis image
-    colorbar
-    clim([0 1])
-    title('FA from Data')
+    subplot(1, 2, 1);
+    imagesc(FA_data);
+    axis image;
+    colorbar;
+    clim([0, 1]);
+    title('FA from Data');
 
-    subplot(1,2,2)
-    imagesc(FA_fit)
-    axis image
-    colorbar
-    clim([0 1])
-    title('FA from RBF Model')
+    subplot(1,2,2);
+    imagesc(FA_fit);
+    axis image;
+    colorbar;
+    clim([0, 1]);
+    title('FA from RBF Model');
 end
