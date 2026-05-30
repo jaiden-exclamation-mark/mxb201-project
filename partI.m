@@ -50,5 +50,4 @@ mask_vector = mask(:);
 
 points = all_points(mask_vector, :);
 [A_data, A_pred] = construct_gaussian_rbf(points, epsilon, rho, D_tensor);
-
-D_fit = construct_fitted_tensors(points, A_pred);
+D_fit = construct_fitted_tensors(S, points, A_pred);

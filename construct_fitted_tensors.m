@@ -1,4 +1,5 @@
-function fitted = construct_fitted_tensors(nx, ny, points, prediction_matrix)
+function fitted = construct_fitted_tensors(S, points, prediction_matrix)
+    [nx, ny, ~] = size(S);
     fitted = zeros(nx, ny, 3, 3);
     num_voxels = length(points);
 
