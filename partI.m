@@ -141,8 +141,8 @@ if plot_fa_maps
     title('FA from RBF Model');
 end
 
-disp("Getting eigendirection field and anisotropy strength...");
-[anis2D, v1x, v1y] = get_anisotropy_strength(nx, ny, D_fit, mask);
+disp("Getting eigendirection fields...");
+[v1x, v1y] = get_eigendirection_fields(nx, ny, D_fit, mask);
 
 if plot_eigendirection_fields
     disp("Plotting eigendirection fields...");
@@ -190,6 +190,8 @@ if plot_eigendirection_fields
     xlabel('y')
     ylabel('x')
 end
+
+anis2D = get_anisotropy_strength(nx, ny, D_fit, mask);
 
 if plot_anisotropy_strength
     disp("Plotting anisotropy strength...");

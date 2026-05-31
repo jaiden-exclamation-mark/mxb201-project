@@ -1,6 +1,4 @@
-function [strength, eig_x, eig_y] = get_anisotropy_strength(nx, ny, fitted_tensors, brain_mask)
-    eig_x = nan(nx,ny);
-    eig_y = nan(nx,ny);
+function strength = get_anisotropy_strength(nx, ny, fitted_tensors, brain_mask)
     strength = nan(nx,ny);
 
     for i = 1:nx
@@ -14,17 +12,9 @@ function [strength, eig_x, eig_y] = get_anisotropy_strength(nx, ny, fitted_tenso
             D_2 = D_local(1:2, 1:2);
             D_2 = real(0.5 * (D_2 + D_2.'));
 
-            [V, L] = eig(D_2);
+            [~, L] = eig(D_2);
 
-            [lambda, indices] = sort(real(diag(L)), 'descend');
-
-            v = real(V(:, indices(1)));
-
-            % Normalize
-            v = v / norm(v);
-
-            eig_x(i, j) = v(1);
-            eig_y(i, j) = v(2);
+            lambda = sort(real(diag(L)), 'descend');
 
             % 2D anisotropy measure
             strength(i,j) = (lambda(1) - lambda(2)) ...
