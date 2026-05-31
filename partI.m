@@ -20,15 +20,15 @@ whos
 
 % Brain mask
 disp("Creating brain mask...");
-mask = S0 > 0.05 * max(S0(:));
+brain_mask = S0 > 0.05 * max(S0(:));
 
-if (plot_brain_mask)
+if plot_brain_mask
     disp("Plotting brain mask...")
     figure;
-    imagesc(mask);
+    imagesc(brain_mask);
     axis image;
     colorbar;
-    title("Brain Mask");
+    title("Brain mask");
 end
 
 disp("Creating diffusion tensors...");
@@ -36,26 +36,29 @@ disp("Creating diffusion tensors...");
 
 if (plot_gradient_directions)
     disp("Plotting gradient pulse directions...");
-    figure
-    quiver3(0*g(:,1),0*g(:,1),0*g(:,1),g(:,1),g(:,2),g(:,3))
-    axis vis3d
-    xlabel x
-    ylabel y
-    zlabel z
-    title('Gradient pulse directions g_i')
+    figure;
+    quiver3(0 * g(:, 1), 0 * g(:, 1), 0 * g(:, 1), g(:, 1), g(:, 2), g(:, 3));
+    axis vis3d;
+    xlabel x;
+    ylabel y;
+    zlabel z;
+    title('Gradient pulse directions g_i');
 end
 
 % Coordinates
 [nx, ny, ~] = size(S);
 [X, Y] = ndgrid(1:nx, 1:ny);
 all_points = [X(:), Y(:)];
-mask_vector = mask(:);
+mask_vector = brain_mask(:);
 
 points = all_points(mask_vector, :);
+
 disp("Constructing Gaussian RBF...");
 [A_data, A_pred] = construct_gaussian_rbf(points, epsilon, rho, D_tensor);
+
 disp("Constructing fitted tensors...");
 D_fit = construct_fitted_tensors(S, points, A_pred);
+
 disp("Finding mean diffusivity maps...")
 [MD_data, MD_fit] = find_MD(D_tensor, D_fit, nx, ny, points);
 
@@ -142,7 +145,7 @@ if plot_fa_maps
 end
 
 disp("Getting eigendirection fields...");
-[v1x, v1y] = get_eigendirection_fields(nx, ny, D_fit, mask);
+[v1x, v1y] = get_eigendirection_fields(nx, ny, D_fit, brain_mask);
 
 if plot_eigendirection_fields
     disp("Plotting eigendirection fields...");
@@ -152,7 +155,7 @@ if plot_eigendirection_fields
 
     sample = false(nx,ny);
     sample(1:skip:end,1:skip:end) = true;
-    sample = sample & mask & isfinite(v1x) & isfinite(v1y);
+    sample = sample & brain_mask & isfinite(v1x) & isfinite(v1y);
 
     figure
     imagesc(FA_fit)
@@ -191,7 +194,7 @@ if plot_eigendirection_fields
     ylabel('x')
 end
 
-anis2D = get_anisotropy_strength(nx, ny, D_fit, mask);
+anis2D = get_anisotropy_strength(nx, ny, D_fit, brain_mask);
 
 if plot_anisotropy_strength
     disp("Plotting anisotropy strength...");
