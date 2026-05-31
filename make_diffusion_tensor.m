@@ -1,4 +1,4 @@
-function [D_tensor, D_field] = make_diffusion_tensor(S, S0, g, b)
+function [D_field, D_tensor] = make_diffusion_tensor(S, S0, g, b)
     % Allocate storage
     [nx, ny, ~] = size(S);
 
@@ -34,3 +34,4 @@ function [D_tensor, D_field] = make_diffusion_tensor(S, S0, g, b)
         end
     end
 end
+
