@@ -1,5 +1,5 @@
 %% Initialisation
-clear
+clear;
 d = dir('faces/*.pgm');
 N = length(d);
 I = imread([d(1).folder, '/', d(1).name]);
@@ -66,9 +66,9 @@ height = screen_height * 0.5;
 x_pos = (screen_width - width) * 0.5;
 y_pos = height;
 
-createFigure(x_pos, y_pos, width, height);
+create_figure(x_pos, y_pos, width, height);
 imshow(reshape(mean_face, rows, cols), [], 'InitialMagnification', 'fit');
-addStyledText(5,15, 'Mean Face', 'w')
+add_styled_text(5,15, 'Mean Face', 'w')
 
 % First 20 Eigenfaces
 width = screen_width * 0.4;
@@ -76,7 +76,7 @@ height = screen_height * 0.5;
 x_pos = 0.0;
 y_pos = 0.0;
 
-createFigure(x_pos, y_pos, width, height);
+create_figure(x_pos, y_pos, width, height);
 t = tiledlayout(5, 4, 'TileSpacing', 'none', 'Padding', 'compact');
 title(t, 'First 20 Eigenfaces');
 
@@ -84,7 +84,7 @@ for k = 1:20
     nexttile;
     eigenface = reshape(U(:, k), rows, cols);
     imshow(eigenface, [], 'InitialMagnification', 'fit');
-    addStyledText(5, 15, sprintf('Eigenface No.%d', k), 'w');
+    add_styled_text(5, 15, sprintf('Eigenface No.%d', k), 'w');
 end
 
 % Random 30 Moustaches
@@ -96,7 +96,7 @@ height = screen_height * 0.5;
 x_pos = (screen_width-width) * 1.0;
 y_pos = (screen_height-height) * 0.0;
 
-createFigure(x_pos, y_pos, width, height);
+create_figure(x_pos, y_pos, width, height);
 
 t = tiledlayout(5, 6, 'TileSpacing', 'none', 'Padding', 'compact');
 
@@ -108,9 +108,9 @@ for i = 1:face_count
     nexttile;
     im_fig = imshow(reshape(A(:, idx), rows, cols), [], 'InitialMagnification', 'fit');
     if predictedMoustache(idx)
-        addStyledText(5, 15, sprintf('%d: yes', idx), 'g');
+        add_styled_text(5, 15, sprintf('%d: yes', idx), 'g');
     else
-        addStyledText(5, 15, sprintf('%d: no', idx), 'r');
+        add_styled_text(5, 15, sprintf('%d: no', idx), 'r');
     end
 end
 
@@ -155,7 +155,7 @@ height = screen_height * 0.5;
 x_pos = (screen_width-width) * 0.5;
 y_pos = (screen_height-height) * 0.5;
 
-createFigure(x_pos, y_pos, width, height);
+create_figure(x_pos, y_pos, width, height);
 
 t = tiledlayout(ceil(face_count/4), 4, 'TileSpacing', 'none', 'Padding', 'compact');
 title(t, 'Moustache Detection on Altered Photos');
@@ -166,26 +166,8 @@ for i = 1:face_count
     imshow(reshape(alteredA(:, i), rows, cols), [], 'InitialMagnification', 'fit');
 
     if alteredPredictions(i)
-        addStyledText(5, 15, sprintf('%s: yes', alteredNames(i)), 'g');
+        add_styled_text(5, 15, sprintf('%s: yes', alteredNames(i)), 'g');
     else
-        addStyledText(5, 15, sprintf('%s: no', alteredNames(i)), 'r');
+        add_styled_text(5, 15, sprintf('%s: no', alteredNames(i)), 'r');
     end
-end
-
-
-%% Helper Functions
-
-function addStyledText(x, y, displayString, textColor)
-    t = text(x, y, displayString);
-    t.Color = textColor;
-    t.FontSize = 12;
-    t.FontWeight = 'bold';
-    t.BackgroundColor = 'k';
-end
-
-function createFigure(x, y, w, h)
-    f = figure();
-    f.Position = [x,y,w,h];
-    f.MenuBar = 'none';
-    f.ToolBar = 'none';
 end
