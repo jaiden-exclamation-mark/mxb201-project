@@ -9,17 +9,14 @@ plot_brain_mask = true;
 plot_gradient_directions = true;
 plot_md_maps = true;
 plot_fa_maps = true;
+plot_eigendirection_fields = true;
+plot_anisotropy_strength = true;
 
 % END Parameters
 
 % Load data from file
 load partI.mat
 whos
-
-% Construct linear DTI system
-A1 = g .* g;
-A2 = 2 * [g(:,1).*g(:,2), g(:,1).*g(:,3), g(:,2).*g(:,3)];
-A = [A1, A2];   % 64 x 6
 
 % Brain mask
 disp("Creating brain mask...");
@@ -142,4 +139,66 @@ if plot_fa_maps
     colorbar;
     clim([0, 1]);
     title('FA from RBF Model');
+end
+
+disp("Getting eigendirection field and anisotropy strength...");
+[anis2D, v1x, v1y] = get_anisotropy_strength(nx, ny, D_fit, mask);
+
+if plot_eigendirection_fields
+    disp("Plotting eigendirection fields...");
+    skip = 3;
+
+    [Xg,Yg] = ndgrid(1:nx,1:ny);
+
+    sample = false(nx,ny);
+    sample(1:skip:end,1:skip:end) = true;
+    sample = sample & mask & isfinite(v1x) & isfinite(v1y);
+
+    figure
+    imagesc(FA_fit)
+    axis image
+    colormap gray
+    colorbar
+    hold on
+
+    quiver(Yg(sample), Xg(sample), ...
+        v1y(sample), v1x(sample), ...
+        0.6, 'r')
+
+    title('Raw principal eigendirection field')
+    xlabel('y')
+    ylabel('x')
+
+    % Plot as unoriented line field
+
+    figure
+    imagesc(FA_fit)
+    axis image
+    colormap gray
+    colorbar
+    hold on
+
+    quiver(Yg(sample), Xg(sample), ...
+        v1y(sample), v1x(sample), ...
+        0.5, 'r')
+
+    quiver(Yg(sample), Xg(sample), ...
+        -v1y(sample), -v1x(sample), ...
+        0.5, 'r')
+
+    title('Principal eigendirection line field: v ~ -v')
+    xlabel('y')
+    ylabel('x')
+end
+
+if plot_anisotropy_strength
+    disp("Plotting anisotropy strength...");
+    figure;
+    imagesc(anis2D);
+    axis image;
+    colorbar;
+    clim([0 1]);
+    title('2D anisotropy strength');
+    xlabel('y');
+    ylabel('x');
 end
